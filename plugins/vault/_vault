@@ -1,0 +1,65 @@
+#compdef vault
+
+local -a _1st_arguments
+_1st_arguments=(
+    'delete:Delete operation on secrets in Vault'
+    'path-help:Look up the help for a path'
+    'read:Read data or secrets from Vault'
+    'renew:Renew the lease of a secret'
+    'revoke:Revoke a secret.'
+    'server:Start a Vault server'
+    'status:Outputs status of whether Vault is sealed and if HA mode is enabled'
+    'write:Write secrets or configuration into Vault'
+    'audit-disable:Disable an audit backend'
+    'audit-enable:Enable an audit backend'
+    'audit-list:Lists enabled audit backends in Vault'
+    'auth:Prints information about how to authenticate with Vault'
+    'auth-disable:Disable an auth provider'
+    'auth-enable:Enable a new auth provider'
+    'init:Initialize a new Vault server'
+    'key-status:Provides information about the active encryption key'
+    'mount:Mount a logical backend'
+    'mount-tune:Tune mount configuration parameters'
+    'mounts:Lists mounted backends in Vault'
+    'policies:List the policies on the server'
+    'policy-delete:Delete a policy from the server'
+    'policy-write:Write a policy to the server'
+    'rekey:Rekeys Vault to generate new unseal keys'
+    'remount:Remount a secret backend to a new path'
+    'rotate:Rotates the backend encryption key used to persist data'
+    'seal:Seals the vault server'
+    'ssh:Initiate a SSH session'
+    'token-create:Create a new auth token'
+    'token-renew:Renew an auth token if there is an associated lease'
+    'token-revoke:Revoke one or more auth tokens'
+    'unmount:Unmount a secret backend'
+    'unseal:Unseals the vault server'
+    'version:Prints the Vault version'
+)
+local expl
+
+_arguments \
+    '-address=[(addr) The address of the Vault server. Overrides the VAULT_ADDR environment variable if set.]' \
+    '-ca-cert=[(path) Path to a PEM encoded CA cert file to use to verify the Vault server SSL certificate. Overrides the VAULT_CACERT environment variable if set.]' \
+    '-ca-path=[(path) Path to a directory of PEM encoded CA cert files to verify the Vault server SSL certificate. If both -ca-cert and -ca-path are specified, -ca-path is used. Overrides the VAULT_CAPATH environment variable if set.]' \
+    '-client-cert=[(path) Path to a PEM encoded client certificate for TLS authentication to the Vault server. Must also specify -client-key.  Overrides the VAULT_CLIENT_CERT environment variable if set.]' \
+    '-client-key=[(path) Path to an unencrypted PEM encoded private key matching the client certificate from -client-cert. Overrides the VAULT_CLIENT_KEY environment variable if set.]' \
+    '(-tls-skip-verify)-tls-skip-verify[If set, do not verify TLS certificate. This is highly not recommended.]' \
+    '(-h -help)'{-h,-help}'[show help]' \
+    '*:: :->subcmds' && return 0
+
+if (( CURRENT == 1 )); then
+  _describe -t commands "vault subcommand" _1st_arguments
+  return
+fi
+
+case "$words[1]" in
+  read)
+    _arguments \
+        '(-format)-format=[(table|json) The format for output. By default it is a whitespace-delimited table. This can also be json.]' \
+        '(-field)-field=[(field) If included, the raw value of the specified field will be output raw to stdout.]' ;;
+  write)
+    _arguments \
+        '(-f -force)'{-f,-force}'[Force the write to continue without any data values specified. This allows writing to keys that do not need or expect any fields to be specified.]' ;;
+esac
+
